@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
 
-export default function StartScreen() {
+export default function StartScreen({navigation}) {
   return (
     <View style = {styles.container}>
     <View style = {styles.topBox}>
@@ -17,9 +17,9 @@ export default function StartScreen() {
     </View>
   
     <View style = {styles.buttonContainter}>
-      <Button title = "New session"></Button>
-      <Button title = "Create program"></Button>
-      <Button title = "Log"></Button>
+      <Button title = "New session" onPress = {()=> navigation.navigate("SessionPage")}></Button>
+      <Button title = "Create program" onPress = {()=> navigation.navigate("CreateProgramPage")}></Button>
+      <Button title = "Log" onPress = {()=> navigation.navigate("LogPage")}></Button>
     </View> 
     </View>
   );

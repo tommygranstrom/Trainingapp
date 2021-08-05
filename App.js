@@ -1,29 +1,32 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
 
-export default function StartScreen() {
-  return (
-    <View style = {styles.container}>
-    <View style = {styles.topBox}>
-      <Text style = {styles.tit}>Training application</Text>
-    </View>
+//Navigation screen
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
-    <View>
-      <Text>Last training:</Text>
-      <Text>Total logged sessions:</Text>
-      <Text>Lifted kilos:</Text>
-      <Text>Current program:</Text>
-      <Text>Lifting Records:</Text>
-    </View>
-  
-    <View style = {styles.buttonContainter}>
-      <Button title = "New session"></Button>
-      <Button title = "Create program"></Button>
-      <Button title = "Log"></Button>
-    </View> 
-    </View>
+import StartScreen from "./modules/StartScreen.js";
+import Log from "./modules/Log.js";
+import Session from "./modules/Session.js";
+import CreateProgram from "./modules/CreateProgram.js";
+
+// This is the main application
+const Stack = createStackNavigator();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName = "Start">
+        <Stack.Screen name = "Start" component = {StartScreen}/>
+        <Stack.Screen name = "LogPage" component = {Log}/>
+        <Stack.Screen name = "SessionPage" component = {Session}/>
+        <Stack.Screen name = "CreateProgramPage" component = {CreateProgram}/>
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   tit:{
@@ -48,3 +51,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+

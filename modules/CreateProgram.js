@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button} from 'react-native';
 export default function Session({navigation}) {
   return (
     <View style = {styles.topBox}>
-      <Text style = {styles.tit}>This is the session screen</Text>
+      <Text style = {styles.tit}>This is the create program page</Text>
     </View>
   );
 }
