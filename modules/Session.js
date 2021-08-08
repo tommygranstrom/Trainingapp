@@ -1,88 +1,155 @@
 import React,{useState}  from 'react';
 import {Button, StyleSheet, Text, View,ScrollView,TextInput } from 'react-native';
+import { Value } from 'react-native-reanimated';
 
 //The possible exercises
-const exercises = ["Bench","Squat","DeadLift"];
-var currentExercises = ["Bench","Dumbell"];
 
-
-function Set({idx,remFunc,changeRep,changeWeigth,no,weight,reps})
+function ExerciseOb(name)
 {
-  const [weg,setWeg] = useState(weight.toString());
-  const [rep,setRep] = useState(reps.toString());
-  return (<View style = {styles.set}>
-            <Text>No: </Text><Text>{no} </Text>
-            <Text>Weight: </Text><TextInput  value={weg} onChangeText={(text) => {setWeg(text);changeWeigth(idx,Number(text))}} keyboardType="numeric"/>
-            <Text>Reps: </Text><TextInput value={rep} onChangeText={(text) => {setRep(text);changeRep(idx,Number(text))} } keyboardType="numeric"/>
-            <Button 
-                title = "X"
-                onPress = {()=>{{remFunc(idx)}}}></Button>
+  return {name:name, sets:[SetOb(1,11,12)]};
+}
+
+function SetOb(no,weigth,reps)
+{
+  return {no:no, weigth:weigth,reps:reps};
+}
+
+function Set({remSet,changeRep,changeWeigth,idx,no,weigth,reps})
+{
+  return(<View style={styles.set}>
+            <Text>No: </Text> 
+            <Text>{no}</Text>
+            
+            <Text>Weigth: </Text> 
+            <TextInput defaultValue = {weigth.toString()} onChangeText = {(value)=>changeWeigth(idx,Number(value))} keyboardType = 'numeric'/>
+            
+            
+            <Text>Reps: </Text>
+            <TextInput defaultValue = {reps.toString()} onChangeText = {(value)=>changeRep(idx,Number(value))} keyboardType = 'numeric'/>
+            
+            <Button title = "X" onPress = {()=>remSet(idx)}></Button>
+            </View>)
+}
+
+function Exercise({remEx,addSet,remSet,changeSetWeigth,changeSetRep,name,idx,sets})
+{
+  const removeSet = (sIdx)=>{
+    remSet(idx,sIdx);
+  }
+  const changeRep = (sIdx,newRep)=>{
+    changeSetRep(idx,sIdx,newRep);
+  }
+  const changeWeigth = (sIdx,newWeigth)=>{
+    changeSetWeigth(idx,sIdx,newWeigth);
+  }
+
+  return (
+          <View>
+              <Text>{name}</Text>
+              {
+                sets.map((item,idx)=>{
+                  return(<Set
+                          key = {idx}
+                          remSet = {removeSet}
+                          changeRep = {changeRep}
+                          changeWeigth = {changeWeigth}
+                          idx = {idx}
+                          no = {idx+1}
+                          weigth = {item.weigth}
+                          reps = {item.reps}
+                         ></Set>)
+                })
+              }
+              <View style = {styles.set}>
+                <Button title = "Add set" onPress = {()=>addSet(idx)}></Button>
+                <Button title = "Remove exercise" onPress ={()=>remEx(idx)} ></Button>
+              </View>
           </View>)
 }
 
-function makeSet(no, weight, reps)
+
+export default function Session({navigation})
 {
-  var a  = {no:no,weight:weight, reps:reps}; 
-  return a;
-}
+  const [exercises,setExercises] = useState([]);
 
-function Exercise({props})
-{
-
-  const [setItems, setTaskItems] = useState([makeSet(1,100,10),makeSet(2,100,8),makeSet(3,100,4)]);
-
-  const addSet = (s)=>{
-    setTaskItems([...setItems,s]);
-  }
-  const removeSet = (idx)=>{
-    let setItemsCopy = [...setItems];
-    setItemsCopy.splice(idx,1);
-    for(var i = 0; i<setItemsCopy.length;i++)
+  const addEx = (te)=>{
+    var isAlreadyadded = false;
+    var i = 0; 
+    while(isAlreadyadded==false && i<exercises.length)
     {
-      setItemsCopy[i].no = i+1;
+      if(exercises[i].name==te)
+      {
+          isAlreadyadded = true;
+      }
+      i++;
     }
-    setTaskItems(setItemsCopy);
+    if(!isAlreadyadded)
+    {
+      setExercises([...exercises,ExerciseOb(te)]);
+    }
+  }
+  
+  const remEx = (idx)=>{
+    let exercisesCopy = [...exercises];
+    exercisesCopy.splice(idx, 1);
+    setExercises(exercisesCopy);
+  }
+  
+  const addSet = (exIdx)=>{
+      let exerciseCopy = [...exercises];
+      let setLength = exerciseCopy[exIdx].sets.length; 
+      if(setLength == 0)
+      {
+        exerciseCopy[exIdx].sets.push(SetOb(0,0,0));
+      }else if(setLength>0){
+        let n = exerciseCopy[exIdx].sets[setLength-1].no+1;
+        let w = exerciseCopy[exIdx].sets[setLength-1].weigth;
+        let r = exerciseCopy[exIdx].sets[setLength-1].reps;
+        exerciseCopy[exIdx].sets.push(SetOb(n,w,r));
+      }
+      setExercises(exerciseCopy);
   }
 
-  const changeRep = (idx,val) =>{
-    setItems[idx].reps = val;
+  const remSet = (exIdx,setIdx) =>{
+      let exerciseCopy = [...exercises];
+      exerciseCopy[exIdx].sets.splice(setIdx,1);
+      setExercises(exerciseCopy);
   }
-  const changeWeigth = (idx,val) =>{
-    setItems[idx].weight = val;
+ 
+  const changeSetRep = (exIdx,setIdx,newVal) =>{
+    let exerciseCopy = [...exercises];
+    exerciseCopy[exIdx].sets[setIdx].reps = newVal;
+    setExercises(exerciseCopy);
   }
-
-  return(<View>
-            <Text>{props}</Text>
-            {setItems.map((item, index) => {
-            return(<Set
-              key = {index}
-              idx = {index}
-              remFunc = {removeSet}
-              changeRep = {changeRep}
-              changeWeigth = {changeWeigth}
-              no = {item.no}
-              weight = {item.weight}
-              reps = {item.reps}
-                  ></Set>)})}
-            <Button 
-                title = "Add set"
-                onPress = {()=>{var tmp = setItems[setItems.length-1];addSet(makeSet(tmp.no+1,tmp.weight,tmp.reps))}}    
-            ></Button>
-         </View>)
-}
-
-export default function Session({navigation}) {
+  const changeSetWeigth = (exIdx,setIdx,newVal) =>{
+    let exerciseCopy = [...exercises];
+    exerciseCopy[exIdx].sets[setIdx].weigth = newVal;
+    setExercises(exerciseCopy);
+  }
+  
   return (
     <View style = {styles.container}>
       <ScrollView>
         {
-            currentExercises.map((item, index) => {
-              return (<Exercise key = {index} props = {item}></Exercise>)
+            exercises.map((item, index) => {
+              return (<Exercise 
+                        key = {index} //Key, necessary
+                        remEx = {remEx} // remove exercise function
+                        addSet = {addSet} //Add a set
+                        remSet = {remSet} //remove a set
+                        changeSetWeigth = {changeSetWeigth} //Change the weight
+                        changeSetRep = {changeSetRep} //Change rep
+                        name = {item.name} //Name of the exercise
+                        idx = {index} //Idx in the Exercise
+                        sets = {item.sets} //Its sets
+                      ></Exercise>)
             })
         }
       </ScrollView>
       <View style = {styles.botBox}>
-        <Button title = "Add Exercise"></Button>
+        <Button 
+          title = "Add Exercise" 
+          onPress = {()=>{navigation.navigate("AddPage",{addEx:addEx})}}></Button>
         <Button title = "Close and Save"></Button>
       </View>
     </View>

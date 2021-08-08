@@ -9,6 +9,8 @@ import StartScreen from "./modules/StartScreen.js";
 import Log from "./modules/Log.js";
 import Session from "./modules/Session.js";
 import CreateProgram from "./modules/CreateProgram.js";
+import AddExercise from './modules/AddExercise.js';
+
 
 // This is the main application
 const Stack = createStackNavigator();
@@ -21,6 +23,7 @@ export default function App() {
         <Stack.Screen name = "LogPage" component = {Log}/>
         <Stack.Screen name = "SessionPage" component = {Session}/>
         <Stack.Screen name = "CreateProgramPage" component = {CreateProgram}/>
+        <Stack.Screen name = "AddPage" component = {AddExercise}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
