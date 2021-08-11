@@ -4,18 +4,17 @@ import { StyleSheet, Text, View, Button} from 'react-native';
 //Navigation screen
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
 
+//Components
 import StartScreen from "./modules/StartScreen.js";
 import Log from "./modules/Log.js";
 import Session from "./modules/Session.js";
 import CreateProgram from "./modules/CreateProgram.js";
 import AddExercise from './modules/AddExercise.js';
 
-
-// This is the main application
-const Stack = createStackNavigator();
-
 export default function App() {
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName = "Start">

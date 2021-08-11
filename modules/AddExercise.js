@@ -1,6 +1,5 @@
 import React,{useState} from 'react';
 import { StyleSheet, Text, View, Button,TextInput} from 'react-native';
-import { Value } from 'react-native-reanimated';
 
 export default function AddExercise({route,navigation}) {
 const {addEx} = route.params;

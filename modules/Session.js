@@ -1,8 +1,11 @@
 import React,{useState}  from 'react';
 import {Button, StyleSheet, Text, View,ScrollView,TextInput } from 'react-native';
-import { Value } from 'react-native-reanimated';
+import DataStorageHelper from './DataStorageHelper';
 
-//The possible exercises
+
+import { AsyncStorage } from 'react-native';
+
+
 
 function ExerciseOb(name)
 {
@@ -71,7 +74,7 @@ function Exercise({remEx,addSet,remSet,changeSetWeigth,changeSetRep,name,idx,set
 export default function Session({navigation})
 {
   const [exercises,setExercises] = useState([]);
-
+  const [name,setName] = useState("");
   const addEx = (te)=>{
     var isAlreadyadded = false;
     var i = 0; 
@@ -126,6 +129,11 @@ export default function Session({navigation})
     exerciseCopy[exIdx].sets[setIdx].weigth = newVal;
     setExercises(exerciseCopy);
   }
+
+  const saveSession = async (name) =>{
+    //Save the session
+    DataStorageHelper().addSession(name);
+  }
   
   return (
     <View style = {styles.container}>
@@ -146,11 +154,21 @@ export default function Session({navigation})
             })
         }
       </ScrollView>
+      <TextInput placeholder = "Name the session..." onChangeText = {(item)=>{setName(item)}}/>
       <View style = {styles.botBox}>
         <Button 
           title = "Add Exercise" 
           onPress = {()=>{navigation.navigate("AddPage",{addEx:addEx})}}></Button>
-        <Button title = "Close and Save"></Button>
+        <Button title = "Close and Save" onPress={()=>{
+                                                    // console.log("########################");
+                                                    // console.log(exercises);
+                                                    // console.log("########################");}
+
+                                                    console.log("Try to add "+ name);
+                                                    saveSession(name);
+                                                    
+                                                    
+                                                    }}></Button>
       </View>
     </View>
   );

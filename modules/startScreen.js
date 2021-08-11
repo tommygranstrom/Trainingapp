@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button} from 'react-native';
 
+import { AsyncStorage } from 'react-native';
+
 export default function StartScreen({navigation}) {
   return (
     <View style = {styles.container}>
@@ -18,7 +20,13 @@ export default function StartScreen({navigation}) {
   
     <View style = {styles.buttonContainter}>
       <Button title = "New session" onPress = {()=> navigation.navigate("SessionPage")}></Button>
-      <Button title = "Create program" onPress = {()=> navigation.navigate("CreateProgramPage")}></Button>
+      <Button title = "Create program" onPress = {()=> {navigation.navigate("CreateProgramPage");
+          try {
+              AsyncStorage.clear()
+              } catch(e) {
+              // clear error
+              }}}
+  ></Button>
       <Button title = "Log" onPress = {()=> navigation.navigate("LogPage")}></Button>
     </View> 
     </View>
